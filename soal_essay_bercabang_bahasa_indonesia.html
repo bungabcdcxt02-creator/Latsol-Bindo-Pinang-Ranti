@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soal Essay Bercabang – Bahasa Indonesia</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+  :root {
+    --merah: #c0392b;
+    --biru: #1a3a5c;
+    --emas: #c8971a;
+    --krem: #fdf8f0;
+    --abu: #f0ebe0;
+    --teks: #2c2c2c;
+    --border: #d4c8a8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--krem);
+    color: var(--teks);
+    line-height: 1.75;
+  }
+
+  /* ============ COVER ============ */
+  .cover {
+    background: var(--biru);
+    color: white;
+    padding: 60px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent, transparent 40px,
+      rgba(255,255,255,0.03) 40px, rgba(255,255,255,0.03) 41px
+    );
+  }
+  .cover-badge {
+    display: inline-block;
+    border: 2px solid var(--emas);
+    color: var(--emas);
+    font-size: 0.78rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 20px;
+    margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .cover h1 span { color: var(--emas); }
+  .cover p { font-size: 1rem; opacity: 0.8; margin-bottom: 6px; }
+  .cover-meta {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .meta-item { font-size: 0.85rem; opacity: 0.75; }
+  .meta-item strong { display: block; color: var(--emas); font-size: 0.9rem; opacity: 1; }
+
+  /* ============ TABS ============ */
+  .tab-bar {
+    display: flex;
+    background: var(--biru);
+    border-bottom: 3px solid var(--emas);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .tab {
+    flex: 1;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    border: none;
+    background: none;
+    transition: all 0.25s;
+    letter-spacing: 0.5px;
+  }
+  .tab:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05); }
+  .tab.active { color: var(--emas); border-bottom: 3px solid var(--emas); margin-bottom: -3px; background: rgba(255,255,255,0.06); }
+
+  /* ============ PANEL ============ */
+  .panel { display: none; padding: 40px 20px 60px; max-width: 860px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  .kec-header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border);
+  }
+  .kec-header .kec-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--merah);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .kec-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    color: var(--biru);
+  }
+  .kec-header .instruksi {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 10px;
+    font-style: italic;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ============ SOAL ============ */
+  .soal-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    overflow: hidden;
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  .soal-header {
+    background: var(--biru);
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .soal-nomor {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--emas);
+    min-width: 32px;
+  }
+  .soal-topik {
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .soal-body { padding: 20px 24px; }
+
+  .soal-utama {
+    font-size: 0.97rem;
+    font-weight: 600;
+    color: var(--biru);
+    margin-bottom: 14px;
+    line-height: 1.65;
+  }
+
+  .cabang-list { list-style: none; }
+  .cabang-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border-left: 3px solid var(--emas);
+    background: var(--abu);
+    border-radius: 0 3px 3px 0;
+    font-size: 0.93rem;
+  }
+  .cabang-label {
+    font-family: 'Playfair Display', serif;
+    color: var(--merah);
+    font-weight: 700;
+    min-width: 22px;
+  }
+
+  .jawaban-area {
+    margin-top: 14px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.92rem;
+    resize: vertical;
+    min-height: 90px;
+    background: var(--krem);
+    color: var(--teks);
+    display: none;
+  }
+  .jawaban-area:focus { outline: 2px solid var(--emas); border-color: transparent; }
+
+  .btn-jawab {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    padding: 6px 16px;
+    background: none;
+    border: 1.5px solid var(--biru);
+    color: var(--biru);
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .btn-jawab:hover { background: var(--biru); color: white; }
+  .btn-jawab.aktif { background: var(--biru); color: white; }
+
+  /* ============ KUNCI JAWABAN ============ */
+  .kunci-card {
+    background: white;
+    border: 1px solid #c8b8d8;
+    border-left: 4px solid var(--merah);
+    border-radius: 4px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+  }
+  .kunci-header {
+    background: #f9f0f0;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #e8d8d8;
+  }
+  .kunci-nomor {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--merah);
+    min-width: 28px;
+  }
+  .kunci-topik { font-size: 0.78rem; letter-spacing: 1px; text-transform: uppercase; color: #888; }
+  .kunci-body { padding: 16px 20px; }
+  .kunci-soal-ringkas {
+    font-size: 0.88rem;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .kunci-sub {
+    margin-bottom: 8px;
+    font-size: 0.93rem;
+  }
+  .kunci-sub-label {
+    font-weight: 700;
+    color: var(--merah);
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* ============ TOGGLE KUNCI ============ */
+  .toggle-kunci-bar {
+    text-align: center;
+    margin: 20px 0 32px;
+  }
+  .btn-toggle-kunci {
+    padding: 10px 28px;
+    background: var(--merah);
+    color: white;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+  .btn-toggle-kunci:hover { background: #a93226; }
+
+  .kunci-section { display: none; }
+  .kunci-section.tampil { display: block; }
+
+  .section-divider {
+    text-align: center;
+    margin: 32px 0 24px;
+    position: relative;
+  }
+  .section-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-divider span {
+    background: var(--krem);
+    padding: 0 16px;
+    position: relative;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #999;
+  }
+
+  /* delay animasi */
+  .soal-card:nth-child(1) { animation-delay: 0.05s; }
+  .soal-card:nth-child(2) { animation-delay: 0.1s; }
+  .soal-card:nth-child(3) { animation-delay: 0.15s; }
+  .soal-card:nth-child(4) { animation-delay: 0.2s; }
+  .soal-card:nth-child(5) { animation-delay: 0.25s; }
+  .soal-card:nth-child(6) { animation-delay: 0.3s; }
+  .soal-card:nth-child(7) { animation-delay: 0.35s; }
+  .soal-card:nth-child(8) { animation-delay: 0.4s; }
+  .soal-card:nth-child(9) { animation-delay: 0.45s; }
+  .soal-card:nth-child(10) { animation-delay: 0.5s; }
+  .soal-card:nth-child(11) { animation-delay: 0.55s; }
+  .soal-card:nth-child(12) { animation-delay: 0.6s; }
+  .soal-card:nth-child(13) { animation-delay: 0.65s; }
+  .soal-card:nth-child(14) { animation-delay: 0.7s; }
+  .soal-card:nth-child(15) { animation-delay: 0.75s; }
+
+  .kunci-card:nth-child(1) { animation-delay: 0.05s; }
+  .kunci-card:nth-child(2) { animation-delay: 0.1s; }
+  .kunci-card:nth-child(3) { animation-delay: 0.15s; }
+  .kunci-card:nth-child(4) { animation-delay: 0.2s; }
+  .kunci-card:nth-child(5) { animation-delay: 0.25s; }
+  .kunci-card:nth-child(6) { animation-delay: 0.3s; }
+  .kunci-card:nth-child(7) { animation-delay: 0.35s; }
+  .kunci-card:nth-child(8) { animation-delay: 0.4s; }
+  .kunci-card:nth-child(9) { animation-delay: 0.45s; }
+  .kunci-card:nth-child(10) { animation-delay: 0.5s; }
+  .kunci-card:nth-child(11) { animation-delay: 0.55s; }
+  .kunci-card:nth-child(12) { animation-delay: 0.6s; }
+  .kunci-card:nth-child(13) { animation-delay: 0.65s; }
+  .kunci-card:nth-child(14) { animation-delay: 0.7s; }
+  .kunci-card:nth-child(15) { animation-delay: 0.75s; }
+
+  @media(max-width:600px){
+    .cover { padding: 40px 20px; }
+    .panel { padding: 24px 14px 50px; }
+    .tab { font-size: 0.78rem; padding: 12px 6px; }
+    .cover-meta { gap: 20px; }
+  }
+  @media print {
+    .tab-bar, .btn-jawab, .jawaban-area, .btn-toggle-kunci { display: none !important; }
+    .panel { display: block !important; }
+    .kunci-section { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-badge">Penilaian Sekolah Kelas Akhir (PSKA)</div>
+  <h1>Soal Essay Bercabang<br><span>Bahasa Indonesia</span></h1>
+  <p>Kurikulum Merdeka · Kelas 5 & 6 SD</p>
+  <div class="cover-meta">
+    <div class="meta-item"><strong>Kecamatan Makasar</strong>15 Soal Essay Bercabang</div>
+    <div class="meta-item"><strong>Kecamatan Cipayung</strong>15 Soal Essay Bercabang</div>
+    <div class="meta-item"><strong>Tahun Pelajaran</strong>2025/2026</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="gantiTab('makasar')">Kec. Makasar</button>
+  <button class="tab" onclick="gantiTab('cipayung')">Kec. Cipayung</button>
+</div>
+
+<!-- ===================== PANEL MAKASAR ===================== -->
+<div id="panel-makasar" class="panel active">
+  <div class="kec-header">
+    <div class="kec-label">Kecamatan Makasar</div>
+    <h2>Soal Essay Bercabang – Bahasa Indonesia</h2>
+    <p class="instruksi">Jawablah setiap soal utama terlebih dahulu, kemudian kerjakan semua soal cabang (a, b, c) secara lengkap dan jelas.</p>
+  </div>
+
+  <!-- SOAL 1 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">1</div>
+      <div class="soal-topik">Kalimat Tanya</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan informasi berikut: <em>"Rudi pergi ke perpustakaan setiap Selasa sore untuk membaca buku tentang alam."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Buatlah kalimat tanya yang tepat untuk menanyakan <strong>alasan</strong> Rudi pergi ke perpustakaan!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Buatlah kalimat tanya yang tepat untuk menanyakan <strong>tempat</strong> Rudi melakukan kegiatannya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Jelaskan perbedaan fungsi kata tanya <em>"mengapa"</em> dan kata tanya <em>"di mana"</em>!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 2 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">2</div>
+      <div class="soal-topik">Teks Eksplanasi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Bacalah penggalan teks berikut: <em>"Hujan terjadi karena siklus air. Air laut menguap akibat panas matahari, membentuk awan, dan akhirnya jatuh sebagai hujan."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tuliskan ringkasan teks eksplanasi di atas dalam 2–3 kalimat menggunakan bahasamu sendiri!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Identifikasi hubungan <strong>sebab-akibat</strong> yang terdapat dalam teks tersebut!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Mengapa teks di atas disebut teks eksplanasi? Sebutkan minimal 2 ciri-cirinya!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 3 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">3</div>
+      <div class="soal-topik">Iklan &amp; Slogan</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan slogan iklan berikut: <em>"Sehatkan hidupmu, cerahkan harimu – Minum Vita Sehat setiap pagi!"</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Informasi apa yang ingin disampaikan oleh iklan tersebut kepada pembaca?</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Jelaskan fungsi slogan dalam iklan! Mengapa slogan dibuat singkat dan mudah diingat?</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Buatlah satu slogan iklan yang menarik untuk produk minuman sehat lainnya!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 4 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">4</div>
+      <div class="soal-topik">Pantun</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan pantun berikut:<br><em>Buah mangga rasanya manis,<br>Dimakan bersama keluarga tercinta.<br>Rajinlah belajar dengan serius,<br>Agar cita-citamu dapat terwujud nyata.</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Sebutkan amanat yang terkandung dalam pantun di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Tunjukkan bagian <strong>sampiran</strong> dan bagian <strong>isi</strong> pada pantun tersebut!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Buatlah satu bait pantun nasihat dengan tema kebersihan!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 5 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">5</div>
+      <div class="soal-topik">Kalimat Efektif &amp; Surat Undangan</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan kalimat surat undangan berikut: <em>"Para siswa-siswi yang terhormat dimohon untuk hadir pada acara perpisahan kelas enam."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Apakah kalimat tersebut sudah efektif? Jika belum, perbaiki dan jelaskan alasannya!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Sebutkan 3 ciri kalimat efektif dalam penulisan surat undangan!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Tuliskan satu kalimat efektif lain yang bisa digunakan dalam surat undangan acara kenaikan kelas!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 6 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">6</div>
+      <div class="soal-topik">Laporan Hasil Pengamatan</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Data pengamatan: <em>"Pohon di halaman sekolah berjumlah 12 batang. Dari jumlah itu, 8 pohon tumbuh subur, 3 pohon layu, dan 1 pohon mati. Tanah di sekitarnya terlihat kering dan retak."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tuliskan <strong>simpulan</strong> yang tepat berdasarkan data pengamatan di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Apa faktor yang kemungkinan menyebabkan kondisi pohon tersebut? Jelaskan!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Sebutkan 3 bagian penting yang harus ada dalam laporan hasil pengamatan!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 7 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">7</div>
+      <div class="soal-topik">Teks Pidato</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan penggalan teks pidato: <em>"Hadirin yang saya hormati, kebersihan lingkungan sekolah adalah tanggung jawab kita bersama. Dengan menjaga kebersihan, kita menciptakan suasana belajar yang nyaman dan sehat."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Apa tujuan utama pidato di atas? Jelaskan!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Sebutkan bagian-bagian pidato yang harus ada dalam sebuah teks pidato yang lengkap!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Tuliskan satu kalimat penutup yang tepat untuk pidato bertema kebersihan lingkungan!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 8 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">8</div>
+      <div class="soal-topik">Majas</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan kalimat-kalimat berikut:<br>
+      (1) <em>"Angin malam berbisik lembut di telingaku."</em><br>
+      (2) <em>"Hidupnya bagai kapal tanpa nakhoda."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tentukan jenis majas yang digunakan pada kalimat (1) dan kalimat (2), serta jelaskan perbedaannya!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Buatlah masing-masing satu contoh kalimat bermajas <strong>hiperbola</strong> dan <strong>metafora</strong>!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Mengapa penggunaan majas dapat memperindah sebuah karya sastra? Jelaskan dengan contoh!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 9 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">9</div>
+      <div class="soal-topik">Formulir</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Data diri: <em>Nama: Dewi Puspita, lahir di Jakarta 12 Maret 2013, alamat: Jl. Mawar No. 5 Jakarta Timur, kelas 6B SD Maju Bersama, nomor telepon orang tua: 0812-3456-7890.</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Isilah kolom-kolom formulir pendaftaran berikut berdasarkan data di atas: Nama Lengkap, Tanggal Lahir, Alamat, Asal Sekolah!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Sebutkan 3 jenis formulir yang biasa digunakan dalam kehidupan sehari-hari beserta kegunaannya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Mengapa data yang diisikan pada formulir harus benar dan lengkap? Jelaskan!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 10 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">10</div>
+      <div class="soal-topik">Unsur Intrinsik Cerita Fiksi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Cerita pendek: <em>"Bima adalah anak yang sombong dan tidak mau berteman. Suatu hari ia jatuh sakit saat ujian. Tidak ada teman yang membantunya karena sikapnya. Bima pun menyesal dan bertekad untuk berubah menjadi anak yang ramah."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Sebutkan amanat yang terkandung dalam cerita tersebut!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Identifikasi <strong>tokoh</strong>, <strong>watak tokoh</strong>, dan <strong>latar</strong> yang ada dalam cerita!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Kaitkan peristiwa yang dialami Bima dengan pengalaman pribadimu! Apa pelajaran yang kamu ambil?</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 11 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">11</div>
+      <div class="soal-topik">Teks Eksplanasi Ilmiah</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Bacalah teks berikut: <em>"Gempa bumi terjadi ketika lempeng tektonik bergerak dan saling bergesek. Getaran yang dihasilkan merambat ke permukaan bumi. Gempa besar dapat menyebabkan kerusakan bangunan dan menimbulkan tsunami."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Jelaskan penyebab utama terjadinya gempa bumi berdasarkan teks!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Temukan proses ilmiah yang dijelaskan dalam teks dan uraikanlah secara runtut!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Teks di atas termasuk jenis wacana apa? Sebutkan ciri yang mendukung jawabanmu!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 12 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">12</div>
+      <div class="soal-topik">Pantun &amp; Ciri-cirinya</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Tabel pantun:<br>
+      <em>Pantun 1: "Pergi ke pasar beli tomat, / Jangan lupa beli sayur kol. / Rajinlah belajar dari matahari terbit, / Agar kelak kau jadi orang berakal."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Identifikasi ciri-ciri pantun yang terdapat pada pantun di atas (jumlah baris, suku kata, rima)!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Apakah pantun tersebut sudah memenuhi syarat pantun yang baik? Jelaskan!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Sebutkan 3 jenis pantun berdasarkan isinya dan berikan contoh singkat masing-masing!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 13 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">13</div>
+      <div class="soal-topik">Surat Undangan &amp; Ejaan</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan penggalan surat undangan: <em>"Dengan hormat kami mengundang bapak/ibu orang tua murid untuk hadir ke acara rapat pertemuan yang akan kami adakan pada hari sabtu tanggal 5 juni 2025 pukul 09.00 WIB."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Temukan dan perbaiki minimal 3 kesalahan ejaan/huruf kapital dalam surat undangan di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Kata apa yang seharusnya dihilangkan agar kalimat menjadi lebih efektif? Jelaskan alasannya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Tuliskan kembali kalimat tersebut dalam versi yang sudah diperbaiki dan efektif!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 14 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">14</div>
+      <div class="soal-topik">Majas dalam Wacana</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Bacalah wacana: <em>"Matahari tersenyum hangat menyambut pagi. Angin bernyanyi riang di antara dedaunan. Bagai irama alam yang tak pernah lelah, alam raya seolah merayakan hari baru."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Temukan dan sebutkan semua jenis majas yang ada dalam wacana di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Jelaskan makna majas yang kamu temukan dan hubungkan dengan konteks wacana!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Gantilah satu kalimat bermajas dalam wacana dengan kalimat bermakna lugas (denotatif)! Bagaimana perbedaan kesannya?</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 15 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">15</div>
+      <div class="soal-topik">Formulir &amp; Surat</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Scenario: Kamu akan mendaftar sebagai anggota perpustakaan sekolah. Tersedia formulir pendaftaran dengan kolom: nama, kelas, alamat, nomor telepon, dan tanda tangan.</p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tuliskan isi setiap kolom formulir menggunakan data dirimu sendiri (boleh fiktif)!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Mengapa kolom tanda tangan diperlukan dalam formulir resmi? Jelaskan fungsinya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Selain formulir anggota perpustakaan, sebutkan 2 jenis formulir lain yang biasa kamu temui di sekolah beserta kegunaannya!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+</div><!-- end panel makasar -->
+
+<!-- ===================== PANEL CIPAYUNG ===================== -->
+<div id="panel-cipayung" class="panel">
+  <div class="kec-header">
+    <div class="kec-label">Kecamatan Cipayung</div>
+    <h2>Soal Essay Bercabang – Bahasa Indonesia</h2>
+    <p class="instruksi">Jawablah setiap soal utama terlebih dahulu, kemudian kerjakan semua soal cabang (a, b, c) secara lengkap dan jelas.</p>
+  </div>
+
+  <!-- SOAL 1 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">1</div>
+      <div class="soal-topik">Kalimat Langsung &amp; Tidak Langsung</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan kalimat tidak langsung berikut: <em>"Ibu berkata bahwa kita harus rajin membaca agar wawasan kita bertambah luas."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Ubahlah kalimat tidak langsung di atas menjadi kalimat langsung yang tepat!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Jelaskan perbedaan ciri penulisan kalimat langsung dan tidak langsung (tanda baca, kata penghubung)!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Buatlah 1 contoh dialog 2 baris menggunakan kalimat langsung dengan tema kegiatan belajar!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 2 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">2</div>
+      <div class="soal-topik">Puisi Lama – Pantun &amp; Syair</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan dua puisi lama berikut:<br>
+      <em>A: "Kalau ada sumur di ladang, / Boleh kita menumpang mandi. / Kalau ada umur yang panjang, / Boleh kita berjumpa lagi."</em><br>
+      <em>B: "Inilah syair orang bijaksana, / Siang malam tiada berguna, / Pekerjaan segala yang fana, / Tinggalkan juga pekerjaan yang sia-sia."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Identifikasi jenis puisi lama masing-masing dan sebutkan ciri yang membedakannya!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Jelaskan amanat yang terkandung dalam puisi A dan puisi B!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Selain pantun dan syair, sebutkan 1 jenis puisi lama lainnya beserta ciri-cirinya!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 3 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">3</div>
+      <div class="soal-topik">Unsur Intrinsik Dongeng</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Penggalan dongeng: <em>"Si Kancil dan Buaya. Suatu hari Si Kancil ingin menyeberangi sungai. Ia berkata kepada para buaya: 'Aku ingin menghitung jumlah kalian!' Para buaya pun berbaris, dan Si Kancil melompati mereka satu per satu hingga sampai di seberang."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Identifikasi unsur intrinsik dongeng: tokoh, watak, latar, dan konflik!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Apa amanat dan nilai moral yang dapat dipetik dari dongeng tersebut?</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Sebutkan unsur ekstrinsik yang mempengaruhi isi dongeng (nilai budaya, sosial, dll)!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 4 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">4</div>
+      <div class="soal-topik">Surat Resmi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan penggalan surat resmi: <em>"Nomor: 012/SDN-07/VI/2025 | Lampiran: – | Perihal: Undangan Rapat Orang Tua | Kepada Yth. Bapak/Ibu Orang Tua/Wali Murid Kelas VI | Di Tempat"</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Sebutkan bagian-bagian surat resmi yang terdapat dalam penggalan di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Tuliskan salam pembuka dan salam penutup yang tepat untuk surat resmi tersebut!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Apa perbedaan surat resmi dengan surat tidak resmi? Sebutkan minimal 3 perbedaannya!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 5 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">5</div>
+      <div class="soal-topik">Fakta &amp; Opini dalam Teks Eksplanasi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan kalimat-kalimat berikut:<br>
+      (1) <em>"Banjir di Jakarta terjadi setiap musim hujan akibat sistem drainase yang buruk."</em><br>
+      (2) <em>"Pemerintah seharusnya lebih serius menangani masalah banjir di ibu kota."</em><br>
+      (3) <em>"Curah hujan di Jakarta pada Januari 2024 mencapai 300 mm."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tentukan mana kalimat fakta dan mana kalimat opini dari ketiga kalimat di atas! Berikan alasannya!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Jelaskan perbedaan fakta dan opini dalam teks eksplanasi!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Mengapa penulis teks eksplanasi harus banyak menggunakan fakta? Jelaskan!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 6 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">6</div>
+      <div class="soal-topik">Ide Pokok Teks Eksposisi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Bacalah paragraf: <em>"Teknologi telah mengubah cara kita belajar. Kini siswa dapat mengakses ribuan buku digital secara gratis. Video pembelajaran tersedia dua puluh empat jam sehari. Aplikasi kuis interaktif membuat belajar menjadi lebih menyenangkan."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tentukan ide pokok paragraf di atas dan tunjukkan kalimat utamanya!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Sebutkan kalimat-kalimat penjelas yang mendukung ide pokok tersebut!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Jelaskan perbedaan teks eksposisi dan teks narasi berdasarkan tujuan dan cirinya!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 7 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">7</div>
+      <div class="soal-topik">Makna Denotatif &amp; Konotatif Puisi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan bait puisi: <em>"Engkau bintang di langit hidupku, / Cahayamu tak pernah padam. / Dalam gelapnya malam yang kelam, / Kau tuntun langkahku pulang."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Jelaskan makna konotatif dari kata <em>"bintang"</em> dan <em>"cahayamu"</em> dalam puisi di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Apa nilai yang terkandung dalam puisi tersebut? Jelaskan!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Bedakan makna denotatif dan konotatif dari kata <em>"bunga"</em> dalam dua kalimat yang berbeda!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 8 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">8</div>
+      <div class="soal-topik">Struktur Teks Pidato</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Teks pidato rumpang: <em>"Assalamualaikum Wr. Wb. Hadirin yang saya hormati, … [bagian isi] … Demikian yang dapat saya sampaikan. Semoga bermanfaat bagi kita semua."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Sebutkan dan jelaskan struktur teks pidato yang lengkap berdasarkan fungsi masing-masing bagiannya!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Lengkapi bagian isi pidato di atas dengan 2–3 kalimat bertema <em>lingkungan hidup</em>!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Sebutkan 2 kaidah kebahasaan yang perlu diperhatikan saat menulis teks pidato!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 9 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">9</div>
+      <div class="soal-topik">Teks Argumentasi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Bacalah paragraf: <em>"Penggunaan gawai berlebihan berdampak negatif bagi pelajar. Banyak siswa menjadi kecanduan dan lalai mengerjakan tugas. Data menunjukkan nilai ujian siswa yang sering bermain gawai lebih rendah 20% dibanding yang tidak. Oleh karena itu, perlu ada aturan penggunaan gawai di sekolah."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Identifikasi struktur teks argumentasi di atas (pernyataan, argumen, simpulan)!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Apakah argumen dalam teks tersebut sudah kuat? Jelaskan dan tambahkan satu argumen pendukung!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Apa perbedaan teks argumentasi dengan teks eksposisi? Sebutkan minimal 2 perbedaan!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 10 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">10</div>
+      <div class="soal-topik">Peribahasa &amp; Maknanya</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan peribahasa berikut:<br>
+      (1) <em>"Bagai air di daun talas."</em><br>
+      (2) <em>"Tak ada gading yang tak retak."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Jelaskan makna konotatif/kiasan dari kedua peribahasa tersebut!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Buatlah masing-masing satu contoh kalimat yang menggunakan kedua peribahasa di atas dalam konteks yang tepat!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Jelaskan perbedaan antara peribahasa, idiom, dan majas! Berikan contoh masing-masing!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 11 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">11</div>
+      <div class="soal-topik">Teks Eksplanasi Persuasif</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan teks: <em>"Sampah plastik adalah ancaman nyata bagi laut kita. Setiap tahun jutaan ton plastik mencemari lautan. Ikan-ikan terancam punah akibat racun dari plastik. Sudah saatnya kita beralih ke kantong ramah lingkungan demi menyelamatkan generasi mendatang."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Sebutkan ciri-ciri teks eksplanasi persuasif yang terdapat dalam teks di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Temukan kata/frasa yang mengandung makna konotatif dalam teks tersebut dan jelaskan maknanya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Tuliskan satu kalimat penutup persuasif yang tepat untuk menambahkan pada teks di atas!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 12 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">12</div>
+      <div class="soal-topik">Kaidah Penulisan Teks Eksplanasi</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Perhatikan penggalan teks: <em>"proses terjadinya pelangi dimulai ketika sinar matahari melewati tetes air hujan. cahaya terpecah menjadi spektrum warna yaitu merah jingga kuning hijau biru nila dan ungu."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Perbaiki kesalahan penggunaan huruf kapital dan tanda baca pada teks di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Identifikasi apakah terdapat kalimat majemuk dalam teks tersebut dan jelaskan jenisnya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Pemenggalan kata yang benar untuk kata <em>"me-lewati"</em> dan <em>"spek-trum"</em> — apakah sudah tepat? Perbaiki jika salah!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 13 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">13</div>
+      <div class="soal-topik">Menulis Puisi dengan Majas</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Ilustrasi: Bayangkan suasana hujan sore hari di kampung halamanmu, dengan sawah hijau, suara jangkrik, dan aroma tanah basah.</p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tuliskan sebuah puisi 2 bait (masing-masing 4 baris) bertemakan suasana tersebut menggunakan minimal 2 majas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Tunjukkan majas yang kamu gunakan dalam puisimu dan jelaskan jenisnya!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Tuliskan makna denotatif dan konotatif dari dua kata yang kamu pilih dalam puisimu!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 14 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">14</div>
+      <div class="soal-topik">Laporan Hasil Wawancara</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Teks wawancara singkat: <em>Pewawancara: "Bu, apa manfaat berkebun bagi kesehatan?" / Narasumber: "Berkebun membuat tubuh bergerak aktif, mengurangi stres, dan menghasilkan makanan segar. Selain itu, kita juga belajar bersabar."</em></p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tuliskan bagian pendahuluan laporan wawancara berdasarkan teks di atas (narasumber, topik, waktu/tempat dapat dikarang)!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Tuliskan ringkasan isi hasil wawancara berdasarkan jawaban narasumber!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Sebutkan struktur laporan wawancara yang lengkap dan urut!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- SOAL 15 -->
+  <div class="soal-card">
+    <div class="soal-header">
+      <div class="soal-nomor">15</div>
+      <div class="soal-topik">Menulis Surat Resmi Kontekstual</div>
+    </div>
+    <div class="soal-body">
+      <p class="soal-utama">Situasi: Ketua OSIS SD Harapan Bangsa ingin mengundang kepala sekolah dan seluruh guru untuk menghadiri pameran karya siswa yang akan dilaksanakan pada Jumat, 20 Juni 2025 pukul 08.00–12.00 WIB di aula sekolah.</p>
+      <ul class="cabang-list">
+        <li class="cabang-item"><span class="cabang-label">a.</span> Tuliskan bagian kepala surat (kop, nomor, tanggal, perihal, dan tujuan surat) berdasarkan situasi di atas!</li>
+        <li class="cabang-item"><span class="cabang-label">b.</span> Tuliskan isi surat undangan tersebut dalam 3–4 kalimat yang efektif dan baku!</li>
+        <li class="cabang-item"><span class="cabang-label">c.</span> Tuliskan kalimat penutup surat yang sopan dan sesuai kaidah penulisan surat resmi!</li>
+      </ul>
+      <button class="btn-jawab" onclick="toggleJawab(this)">✎ Tulis Jawaban</button>
+      <textarea class="jawaban-area" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+
+</div><!-- end panel cipayung -->
+
+
+<script>
+function gantiTab(nama) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + nama).classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  const tabMap = { 'makasar': 0, 'cipayung': 1 };
+  tabs[tabMap[nama]].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function toggleJawab(btn) {
+  const area = btn.nextElementSibling;
+  const tampil = area.style.display === 'block';
+  area.style.display = tampil ? 'none' : 'block';
+  btn.textContent = tampil ? '✎ Tulis Jawaban' : '▲ Sembunyikan';
+  btn.classList.toggle('aktif', !tampil);
+}
+</script>
+</body>
+</html>
